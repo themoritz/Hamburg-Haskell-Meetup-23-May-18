@@ -5,11 +5,15 @@ cabal-version: >= 1.10
 
 library
   exposed-modules:
+                  Dist
+  other-modules:
                   Program
                 , Monad
                 , Free
   build-depends:
                   base
+                , containers
+                , QuickCheck
   default-language: Haskell2010
   ghc-options:
                 -Wall
