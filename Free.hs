@@ -8,11 +8,11 @@ import           Control.Monad (ap)
 
 data Free prog a
   = Instruction (prog (Free prog a))
-  | Stop a
+  | Return a
 
 instance Functor prog => Functor (Free prog) where
   fmap f (Instruction instr) = Instruction (fmap (fmap f) instr)
-  fmap f (Stop x)            = Stop (f x)
+  fmap f (Return x)          = Return (f x)
 
 instance Functor prog => Applicative (Free prog) where
   pure = return
@@ -21,20 +21,20 @@ instance Functor prog => Applicative (Free prog) where
 instance Functor prog => Monad (Free prog) where
   (>>=) :: Free prog a -> (a -> Free prog b) -> Free prog b
   Instruction instr >>= k = Instruction (fmap (\next -> next >>= k) instr)
-  Stop x            >>= k = k x
+  Return x          >>= k = k x
 
   return :: a -> Free prog a
-  return = Stop
+  return = Return
 
 runFree :: Monad m => (forall b. prog b -> m b) -> Free prog a -> m a
 runFree interpret (Instruction instr) = do
   next <- interpret instr
   runFree interpret next
-runFree _         (Stop x) = return x
+runFree _         (Return x)          = return x
 
 iterFree :: (Functor prog, Monad m) => (forall b. prog (m b) -> m b) -> Free prog a -> m a
 iterFree extract (Instruction instr) = extract (fmap (iterFree extract) instr)
-iterFree _       (Stop x)            = return x
+iterFree _       (Return x)          = return x
 
 --
 
@@ -46,10 +46,10 @@ data ProgramF a
 type Program = Free ProgramF
 
 printLn :: String -> Program ()
-printLn ln = Instruction (PrintLn ln (Stop ()))
+printLn ln = Instruction (PrintLn ln (Return ()))
 
 getLn :: Program String
-getLn = Instruction (GetLn Stop)
+getLn = Instruction (GetLn Return)
 
 program :: Program ()
 program = do

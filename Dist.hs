@@ -19,7 +19,7 @@ instance Functor DstF where
 type Dst = Free DstF
 
 primitive :: Ord a => [(a, Double)] -> Dst a
-primitive d = Instruction (Primitive (PT d) Stop)
+primitive d = Instruction (Primitive (PT d) Return)
 
 newtype PT a = PT { getPT :: [(a, Double)] }
   deriving (Show)

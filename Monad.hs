@@ -7,12 +7,12 @@ import           Control.Monad (ap)
 data Program a
   = PrintLn String (Program a)
   | GetLn (String -> Program a)
-  | Stop a
+  | Return a
 
 instance Functor Program where
   fmap f (PrintLn line next) = PrintLn line (fmap f next)
   fmap f (GetLn next)        = GetLn (fmap f . next)
-  fmap f (Stop x)            = Stop (f x)
+  fmap f (Return x)          = Return (f x)
 
 instance Applicative Program where
   pure = return
@@ -22,16 +22,16 @@ instance Monad Program where
   (>>=) :: Program a -> (a -> Program b) -> Program b
   PrintLn line next >>= k = PrintLn line (next >>= k)
   GetLn next        >>= k = GetLn (\line -> next line >>= k)
-  Stop a            >>= k = k a
+  Return a          >>= k = k a
 
   return :: a -> Program a
-  return = Stop
+  return = Return
 
 printLn :: String -> Program ()
-printLn ln = PrintLn ln (Stop ())
+printLn ln = PrintLn ln (Return ())
 
 getLn :: Program String
-getLn = GetLn Stop
+getLn = GetLn Return
 
 program :: Program ()
 program = do
@@ -48,4 +48,4 @@ run (PrintLn message next) = do
 run (GetLn next) = do
   line <- getLine
   run (next line)
-run (Stop a) = return a
+run (Return a) = return a
