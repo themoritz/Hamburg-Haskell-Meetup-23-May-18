@@ -34,28 +34,37 @@ iterFree extract (Instruction instr) = extract (fmap (iterFree extract) instr)
 iterFree _       (Return x)          = return x
 -}
 
--- is this a correct translation?
--- 
-iterFree : (Monad m, Functor f) => (f (m a) -> m a) -> Free f a -> m a
-iterFree f m = assert_total $ case m of
+-- is this a correct translation? What was two different type variables in the Haskell
+-- defition is now one.
+iterFree : (Monad m, Functor extract) => (extract (m a) -> m a) -> Free extract a -> m a
+iterFree extract m = assert_total $ case m of
   Return x => pure x
-  Instruction x => f (map (iterFree f) x)
+  Instruction instr => extract (map (iterFree extract) instr)
 
 {-
-
 runFree :: Monad m => (forall b. prog b -> m b) -> Free prog a -> m a
 runFree interpret (Instruction instr) = do
   next <- interpret instr
   runFree interpret next
 runFree _         (Return x)          = return x
 
+
+--wrong, doesn't type check
+runFree : Monad m => (prog a -> m a) -> Free prog a -> m a
+runFree interpret fp@(Instruction instr) = case fp of
+  Return x => pure x
+  Instruction instr =>
+    do
+      next <- interpret instr
+      runFree interpret next
 -}
+
+
 --
 
 data ProgramF a
   = PrintLn String a
   | GetLn (String -> a)
-  -- deriving (Functor)
 
 Functor ProgramF where
   map f (PrintLn line a) = PrintLn line (f a)
@@ -91,6 +100,9 @@ run = runFree interpret
       pure $ next line
 
 -}
+
+-- start with
+-- :exec run' program
 
 run' : Program a -> IO a
 run' = iterFree extract

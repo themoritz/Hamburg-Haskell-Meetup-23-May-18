@@ -1,2 +1,4 @@
 dist/
 *~
+*.ibc
+i.cmd
