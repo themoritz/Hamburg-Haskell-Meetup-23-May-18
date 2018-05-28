@@ -12,10 +12,10 @@ Monads](http://mlg.eng.cam.ac.uk/pub/pdf/SciGhaGor15.pdf)
 
 *Attempt* to port the above into Idris.
 
-1. [Program] (idris/Program.hs) - done
-2. [Monad](idris/Mon.hs) - done
-3. [Free](idris/Free.hs) - except runFree (and thus run). (iterFree and run' are implemented.) ([Free] (https://github.com/idris-hackers/idris-free/blob/master/Control/Monad/Free.idr) was helpful. I used some of it just with name changes.)
-4. [Dist](idris/Dist.hs) - except runSample / histogram. runExact is implemented.
+1. [Program](idris/Program.idr) - done
+2. [Monad](idris/Mon.idr) - done
+3. [Free](idris/Free.idr) - except runFree (and thus run). (iterFree and run' are implemented.) ([Free] (https://github.com/idris-hackers/idris-free/blob/master/Control/Monad/Free.idr) was helpful. I used some of it just with name changes.)
+4. [Dist](idris/Dist.idr) - except runSample / histogram. runExact is implemented.
 
 Several questions about the porting are in the code.
 
