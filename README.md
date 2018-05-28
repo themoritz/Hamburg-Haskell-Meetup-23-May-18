@@ -7,3 +7,15 @@ Monads](http://mlg.eng.cam.ac.uk/pub/pdf/SciGhaGor15.pdf)
 2. Monad instance for the syntax data type: [Monad](Monad.hs)
 3. Abstracting out the recursion: [Free](Free.hs)
 4. Applying it to probabilistic programming: [Dist](Dist.hs)
+
+### Idris Version
+
+*Attempt* to port the above into Idris.
+
+1. [Program] (idris/Program.hs) - done
+2. [Monad](idris/Mon.hs) - done
+3. [Free](idris/Free.hs) - except runFree (and thus run). (iterFree and run' are implemented.) ([Free] (https://github.com/idris-hackers/idris-free/blob/master/Control/Monad/Free.idr) was helpful. I used some of it just with name changes.)
+4. [Dist](idris/Dist.hs) - except runSample / histogram. runExact is implemented.
+
+Several questions about the porting are in the code.
+
